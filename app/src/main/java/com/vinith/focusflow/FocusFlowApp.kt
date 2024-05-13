@@ -28,7 +28,11 @@ fun FocusFlowApp() {
     val coroutineScope = rememberCoroutineScope()
     val timerJob = remember { mutableStateOf<Job?>(null) }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(top = 28.dp, bottom = 32.dp) // Adjusted padding for top and bottom
+            .fillMaxHeight()
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -39,24 +43,24 @@ fun FocusFlowApp() {
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 38.dp)
+                modifier = Modifier.padding(start = 16.dp)
             )
             // Insights Menu Icon
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Insights Menu",
-                modifier = Modifier
-                    .padding(end = 16.dp, top = 38.dp) // Adjust padding as needed
+                modifier = Modifier.padding(end = 16.dp)
             )
         }
+        //Spacer(modifier = Modifier.(0.dp)) // Added spacer to move stopwatch UI upwards
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             // Stopwatch UI
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(bottom = 80.dp) // Adjusted padding for bottom
             ) {
                 val hours = timeState.value / 3600
                 val minutes = (timeState.value % 3600) / 60
@@ -64,40 +68,42 @@ fun FocusFlowApp() {
 
                 Text(
                     text = String.format("%02d", hours),
-                    fontSize = 72.sp,
+                    fontSize = 92.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 16.dp) // Add padding to separate from buttons
+                    modifier = Modifier.padding(bottom = 1.dp) // Add padding to separate from buttons
                 ) // Hours
                 Text(
                     text = String.format("%02d", minutes),
-                    fontSize = 72.sp,
+                    fontSize = 92.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 16.dp) // Add padding to separate from buttons
+                    modifier = Modifier.padding(bottom = 1.dp) // Add padding to separate from buttons
                 ) // Minutes
                 Text(
                     text = String.format("%02d", seconds),
-                    fontSize = 72.sp,
+                    fontSize = 92.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 ) // Seconds
             }
 
-            // Start/Stop Button
+            // Start/Stop Button (Kept in the same position)
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp)
+                    .padding(5.dp)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically, // Align items vertically
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     // Start/Stop Button
                     Text(
                         text = if (isRunning.value) "Stop" else "Start",
                         fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold, // Bold font
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
                             .clickable {
@@ -110,18 +116,24 @@ fun FocusFlowApp() {
                                 isRunning.value = !isRunning.value
                             }
                     )
-                    // App Block Switch
-                    CustomSwitch(
+                    // App Block Label
+                    Text(
                         text = "App Block",
-                        isChecked = isAppBlockEnabled.value
-                    ) {
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold, // Bold font
+                        modifier = Modifier.padding(end = 3.dp) // Add padding between label and switch
+                    )
+                    // App Block Switch
+                    CustomSwitch(text = "", isChecked =isAppBlockEnabled.value ){
                         isAppBlockEnabled.value = it
                     }
                 }
             }
+
         }
     }
 }
+
 
 
 private fun startTimer(scope: CoroutineScope, timeState: MutableState<Long>): Job {
